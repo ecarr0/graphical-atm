@@ -15,7 +15,6 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
@@ -169,11 +168,18 @@ public class TransferView extends JPanel implements ActionListener {
 		Object source = e.getSource();
 		
 		if (source.equals(transferButton)) {
-			if(manager.account.transfer(Double.valueOf(amountField.getText())) == 3) {
+			int test = manager.account.transfer(manager.db.getAccount(Long.valueOf(accountField.getText())), Double.valueOf(amountField.getText()));
+			if(test == 3) {
 				JOptionPane.showMessageDialog(null, "Amount successfully deposited.");
 				System.out.println("Success.");
 			}
-			else if(manager.account.deposit(Double.valueOf(amountField.getText())) == 0) {
+			else if(test == 2) {
+				JOptionPane.showMessageDialog(null, "Invalid account number.");
+			}
+			else if(test == 1) {
+				JOptionPane.showMessageDialog(null, "Insufficient funds.");
+			}
+			else if(test == 0) {
 				JOptionPane.showMessageDialog(null, "Invalid amount.");
 				System.out.println("Failure.");
 			}

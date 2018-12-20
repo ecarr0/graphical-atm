@@ -132,7 +132,7 @@ public class HomeView extends JPanel implements ActionListener {
 			manager.switchTo(ATM.WITHDRAW_VIEW);
 		}
 		else if(source.equals(transferButton)) {
-			//manager.switchTo();
+			manager.switchTo(ATM.TRANSFER_VIEW);
 		}
 		else {
 			System.err.println("ERROR: Action command not found (" + e.getActionCommand() + ")");
