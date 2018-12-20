@@ -14,7 +14,7 @@ public class ViewManager {
 	
 	private Container views;				// the collection of all views in the application
 	private Database db;					// a reference to the database
-	private BankAccount account;			// the user's bank account
+	public BankAccount account;			// the user's bank account
 	private BankAccount destination;		// an account to which the user can transfer funds
 	
 	/**
@@ -88,5 +88,9 @@ public class ViewManager {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public boolean transferAcct(BankAccount transferAccount) {
+		
 	}
 }

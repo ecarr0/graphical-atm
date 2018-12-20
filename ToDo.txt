@@ -1,0 +1,9 @@
+TO DO:
+- Implement Transfer Account
+- Implement View Balance
+- Implement View Account Information
+- Implement Edit Account Information
+
+Questions:
+- Will using manager.login(null, null) make the account null for the log off setting?
+- Are we supposed to create separate views for each functionality? 
