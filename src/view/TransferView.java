@@ -81,8 +81,8 @@ public class TransferView extends JPanel implements ActionListener {
 		label.setLabelFor(accountField);
 		label.setFont(new Font("DialogInput", Font.BOLD, 14));
 		
-		amountField = new JTextField(20);
-		amountField.setBounds(205, 100, 200, 35);
+		accountField = new JTextField(20);
+		accountField.setBounds(205, 100, 200, 35);
 		
 		this.add(label);
 		this.add(accountField);
