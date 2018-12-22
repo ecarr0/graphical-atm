@@ -9,7 +9,6 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 
 import controller.ViewManager;
-import model.BankAccount;
 
 @SuppressWarnings("serial")
 public class HomeView extends JPanel implements ActionListener {
@@ -19,10 +18,10 @@ public class HomeView extends JPanel implements ActionListener {
 	private JButton depositButton;
 	private JButton withdrawButton;
 	private JButton transferButton;
-	private JButton viewBalanceButton;
-	private JButton viewAcctButton;
-	private JButton editAcctButton;
-	private JButton closeAcctButton;
+//	private JButton viewBalanceButton;
+//	private JButton viewAcctButton;
+//	private JButton editAcctButton;
+//	private JButton closeAcctButton;
 	/**
 	 * Constructs an instance (or objects) of the HomeView class.
 	 * 

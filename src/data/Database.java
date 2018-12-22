@@ -8,7 +8,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Properties;
-import java.sql.ResultSetMetaData;
 import model.BankAccount;
 
 public class Database {

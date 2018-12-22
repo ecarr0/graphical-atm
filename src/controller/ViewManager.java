@@ -15,7 +15,7 @@ public class ViewManager {
 	private Container views;				// the collection of all views in the application
 	public Database db;					// a reference to the database
 	public BankAccount account;			// the user's bank account
-	private BankAccount destination;		// an account to which the user can transfer funds
+//	private BankAccount destination;		// an account to which the user can transfer funds
 	
 	/**
 	 * Constructs an instance (or object) of the ViewManager class.
