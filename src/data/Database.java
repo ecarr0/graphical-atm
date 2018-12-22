@@ -222,10 +222,13 @@ public class Database {
 			
 			// all editable fields are included in this update statement
 			
-			ResultSet results = stmt.executeQuery("select max(account_number) from accounts");
-			ResultSetMetaData rsmd = results.getMetaData();
-			int numberCols = rsmd.getColumnCount();
-			accountNum = results.getLong(numberCols);
+			ResultSet results = stmt.executeQuery("select count(*) AS max from accounts");
+			if(results.next()) {
+				accountNum = results.getLong("MAX") + 100000000;
+			}
+//			ResultSetMetaData rsmd = results.getMetaData();
+//			int numberCols = rsmd.getColumnCount();
+//			accountNum = results.getLong(1);
 			return accountNum;
 		} catch (SQLException e) {
 			e.printStackTrace();

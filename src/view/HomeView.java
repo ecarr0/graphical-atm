@@ -9,6 +9,7 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 
 import controller.ViewManager;
+import model.BankAccount;
 
 @SuppressWarnings("serial")
 public class HomeView extends JPanel implements ActionListener {
@@ -122,7 +123,11 @@ public class HomeView extends JPanel implements ActionListener {
 		Object source = e.getSource();
 		
 		if(source.equals(logoffButton)) {
-			manager.login(null, null); //????
+			//manager.login(null, null); //????
+			manager.account.setUser(null);
+			manager.setAccount(null);
+			//System.out.println(manager.account.toString());
+			//manager.account = new BankAccount('\0', 0, 0, manager.account.getUser());
 			manager.switchTo(ATM.LOGIN_VIEW);
 		}
 		else if(source.equals(depositButton)) {

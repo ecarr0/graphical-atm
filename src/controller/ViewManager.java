@@ -38,6 +38,10 @@ public class ViewManager {
 	 * @param pin
 	 */
 	
+	public void setAccount(BankAccount account) {
+		this.account = account;
+	}
+	
 	public void login(String accountNumber, char[] pin) {
 		try {
 			account = db.getAccount(Long.valueOf(accountNumber), Integer.valueOf(new String(pin)));
