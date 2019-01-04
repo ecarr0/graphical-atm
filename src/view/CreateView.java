@@ -9,7 +9,9 @@ import java.io.ObjectOutputStream;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
@@ -47,6 +49,8 @@ public class CreateView extends JPanel implements ActionListener {
 	private JButton returnButton;
 	private BankAccount newAccount;
 	private User newUser;
+	private long newAccountNumber;
+	private JFrame frame;
 	private JLabel errorMessageLabel;		// label for potential error messages
 
 	
@@ -101,10 +105,10 @@ public class CreateView extends JPanel implements ActionListener {
 	}
 	
 	private void initPinField() {
-		JLabel intro = new JLabel("Your account number is: " + Long.toString(manager.db.highestAcctNumber()), SwingConstants.CENTER);
-		intro.setBounds(50, 0, 500, 20);
-		intro.setFont(new Font("DialogInput", Font.BOLD, 14));
-		this.add(intro);
+//		//JLabel intro = new JLabel("Your account number is: " + Long.toString(newAccountNumber), SwingConstants.CENTER);
+//		intro.setBounds(50, 0, 500, 20);
+//		intro.setFont(new Font("DialogInput", Font.BOLD, 14));
+//		this.add(intro);
 		JLabel label = new JLabel("Pin Number: ", SwingConstants.RIGHT);
 		label.setBounds(50,20,130,25);
 		label.setLabelFor(pinField);
@@ -155,9 +159,17 @@ public class CreateView extends JPanel implements ActionListener {
 		
 		for(int i = 0; i < months.length; i++) {
 			months[i] = Integer.toString(i+1);
+			if(months[i].length() != 2) {
+				String original = months[i];
+				months[i] = "0" + original;
+			}
 		}
 		for(int i = 0; i < days.length; i++) {
 			days[i] = Integer.toString(i + 1);
+			if(days[i].length() != 2) {
+				String original = days[i];
+				days[i] = "0" + original;
+			}
 		}
 		int initYear = 1900;
 		for(int i = 0; i < years.length; i++) {
@@ -309,10 +321,12 @@ public class CreateView extends JPanel implements ActionListener {
 		
 		if(source.equals(submitButton)) { 
 			//if(pinField.getText().getLength())
-			System.out.println(Long.toString(manager.db.highestAcctNumber()));
-			newUser = new User(Integer.valueOf(pinField.getText()), Integer.valueOf((String)monthPicker.getSelectedItem() + (String)dayPicker.getSelectedItem() + (String)yearPicker.getSelectedItem()), Long.valueOf(phoneField1.getText() + phoneField2.getText() + phoneField3.getText()), firstNameField.getText(), lastNameField.getText(), addressField.getText(), cityField.getText(), (String)stateField.getSelectedItem(), postalField.getText());
+			//System.out.println(Long.toString(manager.db.highestAcctNumber()));
+			newAccountNumber = manager.db.highestAcctNumber() + 1;
+			JOptionPane.showMessageDialog(frame,"Your account number is: " + Long.toString(newAccountNumber));
+			newUser = new User(Integer.valueOf(pinField.getText()), Integer.valueOf((String)yearPicker.getSelectedItem() + (String)monthPicker.getSelectedItem() + (String)dayPicker.getSelectedItem()), Long.valueOf(phoneField1.getText() + phoneField2.getText() + phoneField3.getText()), firstNameField.getText(), lastNameField.getText(), addressField.getText(), cityField.getText(), (String)stateField.getSelectedItem(), postalField.getText());
 			System.out.println(newUser.toString());
-			newAccount = new BankAccount('Y', manager.db.highestAcctNumber() + 1, 0.00, newUser);
+			newAccount = new BankAccount('Y', newAccountNumber, 0.00, newUser);
 			manager.db.insertAccount(newAccount);
 			pinField.setText("");
 			firstNameField.setText("");

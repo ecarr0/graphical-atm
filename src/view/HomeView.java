@@ -49,7 +49,7 @@ public class HomeView extends JPanel implements ActionListener {
 		// building the HomeView.
 		
 		//this.add(new javax.swing.JLabel("HomeView", javax.swing.SwingConstants.CENTER));
-		
+		this.setLayout(null);
 		
 		initLogOffButton();
 		initDepositButton();
@@ -69,7 +69,7 @@ public class HomeView extends JPanel implements ActionListener {
 	}
 	private void initLogOffButton() {	
 		logoffButton = new JButton("Log Off");
-		logoffButton.setBounds(205, 300, 200, 35);
+		logoffButton.setBounds(150, 100, 100, 35);
 		logoffButton.addActionListener(this);
 		
 		this.add(logoffButton);
@@ -77,7 +77,7 @@ public class HomeView extends JPanel implements ActionListener {
 	
 	private void initDepositButton() {	
 		depositButton = new JButton("Deposit");
-		depositButton.setBounds(205, 340, 200, 35);
+		depositButton.setBounds(150, 140, 100, 35);
 		depositButton.addActionListener(this);
 		
 		this.add(depositButton);
@@ -85,15 +85,15 @@ public class HomeView extends JPanel implements ActionListener {
 	
 	private void initWithdrawButton() {
 		withdrawButton = new JButton("Withdraw");
-		withdrawButton.setBounds(205, 280, 200, 35);
+		withdrawButton.setBounds(150, 180, 100, 35);
 		withdrawButton.addActionListener(this);
 		
 		this.add(withdrawButton);
 	}
 	
 	private void initTransferButton() {
-		transferButton = new JButton("Transfer Funds");
-		transferButton.setBounds(205, 320, 200, 35);
+		transferButton = new JButton("Transfer");
+		transferButton.setBounds(150, 220, 100, 35);
 		transferButton.addActionListener(this);
 		
 		this.add(transferButton);

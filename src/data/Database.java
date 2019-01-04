@@ -218,17 +218,17 @@ public class Database {
 		long accountNum = 0;
 		try {
 			stmt = conn.createStatement();
+
+
+			PreparedStatement selectStmt = conn.prepareStatement("SELECT MAX(account_number) FROM accounts");
+//			selectStmt.setLong(1, accountNumber);
 			
-			// all editable fields are included in this update statement
-			
-			ResultSet results = stmt.executeQuery("select count(*) AS max from accounts");
-			if(results.next()) {
-				accountNum = results.getLong("MAX") + 100000000;
+			rs = selectStmt.executeQuery();
+			System.out.println(rs);
+			//return rs;
+			if (rs.next()) {
+				return rs.getLong(1);
 			}
-//			ResultSetMetaData rsmd = results.getMetaData();
-//			int numberCols = rsmd.getColumnCount();
-//			accountNum = results.getLong(1);
-			return accountNum;
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
