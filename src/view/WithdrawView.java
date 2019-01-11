@@ -77,7 +77,7 @@ public class WithdrawView extends JPanel implements ActionListener {
 	 */
 	
 	private void initAmountField() {
-		JLabel label = new JLabel("Withdrawal Amount: ", SwingConstants.RIGHT);
+		JLabel label = new JLabel("Withdraw Amount: ", SwingConstants.RIGHT);
 		label.setBounds(0, 100, 150, 35);
 		label.setLabelFor(amountField);
 		label.setFont(new Font("DialogInput", Font.BOLD, 14));

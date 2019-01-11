@@ -212,7 +212,7 @@ public class TransferView extends JPanel implements ActionListener {
 		
 		if (source.equals(transferButton)) {
 			int test;
-			if(accountField.getText() == "" || !checkUserInput(accountField.getText(), 3)) {
+			if(accountField.getText() == "" || !checkUserInput(accountField.getText(), 3) || Long.valueOf(accountField.getText()) == account.getAccountNumber()) {
 				test = 2;
 			}
 			else if(amountField.getText() == "" || !checkUserInput(amountField.getText(), 2)) {
