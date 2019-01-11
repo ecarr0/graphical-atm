@@ -20,6 +20,7 @@ public class HomeView extends JPanel implements ActionListener {
 	private ViewManager manager;		// manages interactions between the views, model, and database
 	private BankAccount account;
 	private JLabel printBalance;
+	private JLabel printName;
 	private JButton logoffButton;
 	private JButton depositButton;
 	private JButton withdrawButton;
@@ -58,7 +59,12 @@ public class HomeView extends JPanel implements ActionListener {
 		
 
 		this.setLayout(null);
-
+		initLogOffButton();
+		initDepositButton();
+		initWithdrawButton();
+		initTransferButton();
+		initViewAcctButton();
+		initCloseAcctButton();
 		
 		// TODO
 		//
@@ -69,15 +75,10 @@ public class HomeView extends JPanel implements ActionListener {
 		// positioning your components.
 	}
 	public void initScreen() {
-		initLogOffButton();
-		initDepositButton();
-		initWithdrawButton();
-		initTransferButton();
-		initViewAcctButton();
-		initCloseAcctButton();
 		
 		
-		JLabel printName = new JLabel("Welcome, " + account.getUser().getFirstName() + " " + account.getUser().getLastName());
+		
+		printName = new JLabel("Welcome, " + account.getUser().getFirstName() + " " + account.getUser().getLastName());
 		printName.setBounds(10, 10, 500, 25);
 		printName.setFont(new Font("DialogInput", Font.BOLD, 14));
 		
@@ -166,7 +167,8 @@ public class HomeView extends JPanel implements ActionListener {
 			manager.db.updateAccount(account);
 			manager.account.setUser(null);
 			manager.setAccount(null);
-			this.removeAll();
+			this.remove(printBalance);
+			this.remove(printName);
 			manager.switchTo(ATM.LOGIN_VIEW);
 		}
 		else if(source.equals(depositButton)) {

@@ -74,6 +74,7 @@ public class TransferView extends JPanel implements ActionListener {
 		initAmountField();
 		initTransferButton();
 		initReturnButton();
+		initErrorMessageLabel();
 	}
 	
 	/*
@@ -82,12 +83,12 @@ public class TransferView extends JPanel implements ActionListener {
 	
 	private void initAccountField() {
 		JLabel label = new JLabel("Account Number: ", SwingConstants.RIGHT);
-		label.setBounds(100, 100, 95, 35);
+		label.setBounds(0, 100, 150, 35);
 		label.setLabelFor(accountField);
 		label.setFont(new Font("DialogInput", Font.BOLD, 14));
 		
 		accountField = new JTextField(20);
-		accountField.setBounds(205, 100, 200, 35);
+		accountField.setBounds(160, 100, 200, 35);
 		
 		this.add(label);
 		this.add(accountField);
@@ -95,12 +96,12 @@ public class TransferView extends JPanel implements ActionListener {
 	
 	private void initAmountField() {
 		JLabel label = new JLabel("Transfer Amount: ", SwingConstants.RIGHT);
-		label.setBounds(100, 100, 95, 35);
+		label.setBounds(0, 200, 150, 35);
 		label.setLabelFor(amountField);
 		label.setFont(new Font("DialogInput", Font.BOLD, 14));
 		
 		amountField = new JTextField(20);
-		amountField.setBounds(205, 100, 200, 35);
+		amountField.setBounds(160, 200, 200, 35);
 		
 		this.add(label);
 		this.add(amountField);
@@ -117,14 +118,14 @@ public class TransferView extends JPanel implements ActionListener {
 	
 	private void initTransferButton() {	
 		transferButton = new JButton("Transfer");
-		transferButton.setBounds(205, 180, 200, 35);
+		transferButton.setBounds(126, 300, 248, 35);
 		transferButton.addActionListener(this);
 		
 		this.add(transferButton);
 	}
 	
 	private void initErrorMessageLabel() {
-		errorMessageLabel.setBounds(0, 240, 500, 35);
+		errorMessageLabel.setBounds(0, 250, 500, 35);
 		errorMessageLabel.setFont(new Font("DialogInput", Font.ITALIC, 14));
 		errorMessageLabel.setForeground(Color.RED);
 		
@@ -148,6 +149,43 @@ public class TransferView extends JPanel implements ActionListener {
 	 * Initializes the components needed for the power button.
 	 */
 
+	public boolean checkUserInput(String input, int type) {
+		// 1 = integer, 2 = double, 3 = long
+		if(type == 1) {
+			int integerInput;
+			try{
+				integerInput = Integer.parseInt(input);
+		    }
+		    catch(NumberFormatException e){
+		    	System.out.println("Response must be numerical. Try again.\n");
+		    	return false;
+		    }
+			return true;
+		}
+		
+		else if(type == 2){
+			double doubleInput;
+			try {
+				doubleInput = Double.parseDouble(input);
+			}
+			catch (NumberFormatException e){
+				System.out.println("Response must be numerical. Try again.\n");
+				return false;
+			}
+			return true;
+		}
+		else {
+			Long longInput;
+			try {
+				longInput = Long.parseLong(input);
+			}
+			catch (NumberFormatException e) {
+				System.out.println("Response must be numerical. Try again.\n");
+				return false;
+			}
+			return true;
+		}
+	}
 	
 	/*
 	 * LoginView is not designed to be serialized, and attempts to serialize will throw an IOException.
@@ -173,19 +211,32 @@ public class TransferView extends JPanel implements ActionListener {
 		Object source = e.getSource();
 		
 		if (source.equals(transferButton)) {
-			int test = account.transfer(manager.db.getAccount(Long.valueOf(accountField.getText())), Double.valueOf(amountField.getText()));
+			int test;
+			if(accountField.getText() == "" || !checkUserInput(accountField.getText(), 3)) {
+				test = 2;
+			}
+			else if(amountField.getText() == "" || !checkUserInput(amountField.getText(), 2)) {
+				test = 0;
+			}
+			else{
+				test = account.transfer(manager.db.getAccount(Long.valueOf(accountField.getText())), Double.valueOf(amountField.getText()));
+			}
 			if(test == 3) {
-				JOptionPane.showMessageDialog(null, "Amount successfully deposited.");
-				System.out.println("Success.");
+				manager.db.updateAccount(account);
+				manager.db.updateAccount(manager.db.getAccount(Long.valueOf(accountField.getText())));
+				amountField.setText("");
+				accountField.setText("");
+				updateErrorMessage("Amount successfully transferred.");
+				
 			}
 			else if(test == 2) {
-				JOptionPane.showMessageDialog(null, "Invalid account number.");
+				updateErrorMessage("Invalid account number.");
 			}
 			else if(test == 1) {
-				JOptionPane.showMessageDialog(null, "Insufficient funds.");
+				updateErrorMessage("Insufficient funds.");
 			}
 			else if(test == 0) {
-				JOptionPane.showMessageDialog(null, "Invalid amount.");
+				updateErrorMessage("Invalid amount.");
 				System.out.println("Failure.");
 			}
 			else {
@@ -193,6 +244,8 @@ public class TransferView extends JPanel implements ActionListener {
 			}
 		}
 		else if(source.equals(returnButton)) {
+			updateErrorMessage("");
+			amountField.setText("");
 			manager.sendBankAccount(account, "Home");
 			manager.switchTo(ATM.HOME_VIEW);
 		}

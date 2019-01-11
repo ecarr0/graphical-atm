@@ -397,6 +397,7 @@ public class CreateView extends JPanel implements ActionListener {
 				cityField.setText("");
 				stateField.setSelectedItem("AL");
 				postalField.setText("");
+				updateErrorMessage("");
 				manager.switchTo(ATM.LOGIN_VIEW);
 			}
 		}
@@ -414,6 +415,7 @@ public class CreateView extends JPanel implements ActionListener {
 			cityField.setText("");
 			stateField.setSelectedItem("AL");
 			postalField.setText("");
+			updateErrorMessage("");
 			manager.switchTo(ATM.LOGIN_VIEW);
 		}
 		else {

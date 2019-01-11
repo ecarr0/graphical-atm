@@ -244,8 +244,10 @@ public class LoginView extends JPanel implements ActionListener {
 				manager.login(accountNum, pin);
 			}
 		} else if (source.equals(createButton)) {
+			updateErrorMessage("");
 			manager.switchTo(ATM.CREATE_VIEW);
 		} else if (source.equals(powerButton)) {
+			updateErrorMessage("");
 			manager.shutdown();
 		} else {
 			System.err.println("ERROR: Action command not found (" + e.getActionCommand() + ")");
