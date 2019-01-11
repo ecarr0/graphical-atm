@@ -46,14 +46,12 @@ public class ViewManager {
 		try {
 			account = db.getAccount(Long.valueOf(accountNumber), Integer.valueOf(new String(pin)));
 			
-			if (account == null) {
+			if (account == null || account.getStatus() == 'N') {
 				LoginView lv = ((LoginView) views.getComponents()[ATM.LOGIN_VIEW_INDEX]);
 				lv.updateErrorMessage("Invalid account number and/or PIN.");
 			} else {
+				sendBankAccount(account, "Home");
 				switchTo(ATM.HOME_VIEW);
-				
-				LoginView lv = ((LoginView) views.getComponents()[ATM.LOGIN_VIEW_INDEX]);
-				lv.updateErrorMessage("");
 			}
 		} catch (NumberFormatException e) {
 			// ignore
@@ -75,6 +73,10 @@ public class ViewManager {
 	 * allows the database to clean up any open resources it used.
 	 */
 	
+	public BankAccount getAccount() {
+		return account;
+	}
+	
 	public void shutdown() {
 		try {			
 			int choice = JOptionPane.showConfirmDialog(
@@ -91,6 +93,33 @@ public class ViewManager {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
+		}
+	}
+	
+	public void sendBankAccount(BankAccount account, String view) {
+		switch(view) {
+		case "Home":
+			view.HomeView hv = ((view.HomeView) views.getComponents()[ATM.HOME_VIEW_INDEX]);
+			hv.setBankAccount(account);
+			hv.initScreen();
+			break;
+		case "Deposit":
+			view.DepositView dv = ((view.DepositView) views.getComponents()[ATM.DEPOSIT_VIEW_INDEX]);
+			dv.setBankAccount(account);
+			break;
+		case "Withdraw":
+			view.WithdrawView wv = ((view.WithdrawView) views.getComponents()[ATM.WITHDRAW_VIEW_INDEX]);
+			wv.setBankAccount(account);
+			break;
+		case "Transfer":
+			view.TransferView tv = ((view.TransferView) views.getComponents()[ATM.TRANSFER_VIEW_INDEX]);
+			tv.setBankAccount(account);
+			break;
+		case "ViewInfo":
+			view.InformationView iv = ((view.InformationView) views.getComponents()[ATM.INFORMATION_VIEW_INDEX]);
+			iv.setBankAccount(account);
+			iv.initInfoPortion();
+			break;
 		}
 	}
 }

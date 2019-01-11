@@ -28,9 +28,9 @@ public class CreateView extends JPanel implements ActionListener {
 	private JPasswordField pinField;
 	private JTextField firstNameField;
 	private JTextField lastNameField;
-	private JComboBox dayPicker;
-	private JComboBox monthPicker;
-	private JComboBox yearPicker;
+	private JComboBox<String> dayPicker;
+	private JComboBox<String> monthPicker;
+	private JComboBox<String> yearPicker;
 	//	private UtilDateModel model;
 //	private Properties p;
 //	private JDatePanelImpl datePanel;
@@ -43,7 +43,7 @@ public class CreateView extends JPanel implements ActionListener {
 	private JTextField phoneField3;
 	private JTextField addressField;
 	private JTextField cityField;
-	private JComboBox stateField;
+	private JComboBox<String> stateField;
 	private JTextField postalField;
 	private JButton submitButton;
 	private JButton returnButton;
@@ -51,7 +51,7 @@ public class CreateView extends JPanel implements ActionListener {
 	private User newUser;
 	private long newAccountNumber;
 	private JFrame frame;
-	private JLabel errorMessageLabel;		// label for potential error messages
+	private JLabel errorMessageLabel = new JLabel("");;		// label for potential error messages
 
 	
 	/**
@@ -66,6 +66,8 @@ public class CreateView extends JPanel implements ActionListener {
 		this.manager = manager;
 		initialize();
 	}
+	
+	
 	
 	///////////////////// PRIVATE METHODS /////////////////////////////////////////////
 	
@@ -95,6 +97,7 @@ public class CreateView extends JPanel implements ActionListener {
 		initPostalField();
 		initSubmitButton();
 		initReturnButton();
+		initErrorMessageLabel();
 		// TODO
 		//
 		// this is where you should build the CreateView (i.e., all the components that
@@ -177,13 +180,13 @@ public class CreateView extends JPanel implements ActionListener {
 			initYear++;
 		}
 		
-		monthPicker = new JComboBox(months);
+		monthPicker = new JComboBox<String>(months);
 		monthPicker.setBounds(205, 110, 50, 25);
 		
-		dayPicker = new JComboBox(days);
+		dayPicker = new JComboBox<String>(days);
 		dayPicker.setBounds(260, 110, 50, 25);
 		
-		yearPicker = new JComboBox(years);
+		yearPicker = new JComboBox<String>(years);
 		yearPicker.setBounds(315, 110, 75, 25);
 		
 //		dobField = new JTextField(8);
@@ -251,7 +254,7 @@ public class CreateView extends JPanel implements ActionListener {
 		
 		String[] state = {"AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DC", "DE", "FL", "GA", "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "PR", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY"};
 		
-		stateField = new JComboBox<Object>(state);
+		stateField = new JComboBox<String>(state);
 		stateField.setBounds(205, 230, 200, 25);
 		
 		this.add(label);
@@ -288,11 +291,53 @@ public class CreateView extends JPanel implements ActionListener {
 	}
 	
 	private void initErrorMessageLabel() {
-		errorMessageLabel.setBounds(0, 240, 500, 35);
+		errorMessageLabel.setBounds(10, 350, 500, 35);
 		errorMessageLabel.setFont(new Font("DialogInput", Font.ITALIC, 14));
 		errorMessageLabel.setForeground(Color.RED);
 		
 		this.add(errorMessageLabel);
+	}
+	
+	public void updateErrorMessage(String errorMessage) {
+		errorMessageLabel.setText(errorMessage);
+	}
+	
+	public boolean checkUserInput(String input, int type) {
+		// 1 = integer, 2 = double, 3 = long
+		if(type == 1) {
+			int integerInput;
+			try{
+				integerInput = Integer.parseInt(input);
+		    }
+		    catch(NumberFormatException e){
+		    	System.out.println("Response must be numerical. Try again.\n");
+		    	return false;
+		    }
+			return true;
+		}
+		
+		else if(type == 2){
+			double doubleInput;
+			try {
+				doubleInput = Double.parseDouble(input);
+			}
+			catch (NumberFormatException e){
+				System.out.println("Response must be numerical. Try again.\n");
+				return false;
+			}
+			return true;
+		}
+		else {
+			Long longInput;
+			try {
+				longInput = Long.parseLong(input);
+			}
+			catch (NumberFormatException e) {
+				System.out.println("Response must be numerical. Try again.\n");
+				return false;
+			}
+			return true;
+		}
 	}
 	
 	/*
@@ -319,29 +364,41 @@ public class CreateView extends JPanel implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		Object source = e.getSource();
 		
-		if(source.equals(submitButton)) { 
-			//if(pinField.getText().getLength())
-			//System.out.println(Long.toString(manager.db.highestAcctNumber()));
-			newAccountNumber = manager.db.highestAcctNumber() + 1;
-			JOptionPane.showMessageDialog(frame,"Your account number is: " + Long.toString(newAccountNumber));
-			newUser = new User(Integer.valueOf(pinField.getText()), Integer.valueOf((String)yearPicker.getSelectedItem() + (String)monthPicker.getSelectedItem() + (String)dayPicker.getSelectedItem()), Long.valueOf(phoneField1.getText() + phoneField2.getText() + phoneField3.getText()), firstNameField.getText(), lastNameField.getText(), addressField.getText(), cityField.getText(), (String)stateField.getSelectedItem(), postalField.getText());
-			System.out.println(newUser.toString());
-			newAccount = new BankAccount('Y', newAccountNumber, 0.00, newUser);
-			manager.db.insertAccount(newAccount);
-			pinField.setText("");
-			firstNameField.setText("");
-			lastNameField.setText("");
-			dayPicker.setSelectedIndex(0);
-			monthPicker.setSelectedIndex(0);
-			yearPicker.setSelectedIndex(0);
-			phoneField1.setText("");
-			phoneField2.setText("");
-			phoneField3.setText("");
-			addressField.setText("");
-			cityField.setText("");
-			stateField.setSelectedItem("AL");
-			postalField.setText("");
-			manager.switchTo(ATM.LOGIN_VIEW);
+		if(source.equals(submitButton)) {
+			//check inputs
+			boolean ok = true;
+			if(!checkUserInput(pinField.getText(), 1) || !checkUserInput(phoneField1.getText(), 1) || !checkUserInput(phoneField2.getText(), 1) || !checkUserInput(phoneField3.getText(), 1) || !checkUserInput(postalField.getText(), 1)) {
+				ok = false;
+				updateErrorMessage("Invalid entry.");
+			}
+			if(pinField.getText().length() != 4 || phoneField1.getText().length() != 3 || phoneField2.getText().length() != 3 || phoneField3.getText().length() != 3 || postalField.getText().length() != 5) {
+				ok = false;
+				updateErrorMessage("One or more entries are too long or too short.");
+			}
+			
+			if(ok) {
+				
+				newAccountNumber = manager.db.highestAcctNumber() + 1;
+				JOptionPane.showMessageDialog(frame,"Your account number is: " + Long.toString(newAccountNumber));
+				newUser = new User(Integer.valueOf(pinField.getText()), Integer.valueOf((String)yearPicker.getSelectedItem() + (String)monthPicker.getSelectedItem() + (String)dayPicker.getSelectedItem()), Long.valueOf(phoneField1.getText() + phoneField2.getText() + phoneField3.getText()), firstNameField.getText(), lastNameField.getText(), addressField.getText(), cityField.getText(), (String)stateField.getSelectedItem(), postalField.getText());
+				System.out.println(newUser.toString());
+				newAccount = new BankAccount('Y', newAccountNumber, 0.00, newUser);
+				manager.db.insertAccount(newAccount);
+				pinField.setText("");
+				firstNameField.setText("");
+				lastNameField.setText("");
+				dayPicker.setSelectedIndex(0);
+				monthPicker.setSelectedIndex(0);
+				yearPicker.setSelectedIndex(0);
+				phoneField1.setText("");
+				phoneField2.setText("");
+				phoneField3.setText("");
+				addressField.setText("");
+				cityField.setText("");
+				stateField.setSelectedItem("AL");
+				postalField.setText("");
+				manager.switchTo(ATM.LOGIN_VIEW);
+			}
 		}
 		else if(source.equals(returnButton)) {
 			pinField.setText("");

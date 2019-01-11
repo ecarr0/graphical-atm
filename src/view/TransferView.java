@@ -19,6 +19,7 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
 import controller.ViewManager;
+import model.BankAccount;
 
 @SuppressWarnings("serial")
 public class TransferView extends JPanel implements ActionListener {
@@ -29,7 +30,7 @@ public class TransferView extends JPanel implements ActionListener {
 	private JButton transferButton;
 	private JButton returnButton;// label for potential error messages
 	private JLabel errorMessageLabel;		// label for potential error messages
-
+	private BankAccount account;
 	/**
 	 * Constructs an instance (or objects) of the LoginView class.
 	 * 
@@ -42,6 +43,10 @@ public class TransferView extends JPanel implements ActionListener {
 		this.manager = manager;
 		this.errorMessageLabel = new JLabel("", SwingConstants.CENTER);
 		initialize();
+	}
+	
+	public void setBankAccount(BankAccount setAccount) {
+		this.account = setAccount;
 	}
 	
 	///////////////////// INSTANCE METHODS ////////////////////////////////////////////
@@ -168,7 +173,7 @@ public class TransferView extends JPanel implements ActionListener {
 		Object source = e.getSource();
 		
 		if (source.equals(transferButton)) {
-			int test = manager.account.transfer(manager.db.getAccount(Long.valueOf(accountField.getText())), Double.valueOf(amountField.getText()));
+			int test = account.transfer(manager.db.getAccount(Long.valueOf(accountField.getText())), Double.valueOf(amountField.getText()));
 			if(test == 3) {
 				JOptionPane.showMessageDialog(null, "Amount successfully deposited.");
 				System.out.println("Success.");
@@ -188,6 +193,7 @@ public class TransferView extends JPanel implements ActionListener {
 			}
 		}
 		else if(source.equals(returnButton)) {
+			manager.sendBankAccount(account, "Home");
 			manager.switchTo(ATM.HOME_VIEW);
 		}
 		else {

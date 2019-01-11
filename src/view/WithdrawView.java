@@ -2,24 +2,20 @@ package view;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 
-import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
 import controller.ViewManager;
+import model.BankAccount;
 
 @SuppressWarnings("serial")
 public class WithdrawView extends JPanel implements ActionListener {
@@ -29,7 +25,8 @@ public class WithdrawView extends JPanel implements ActionListener {
 	private JButton withdrawButton;
 	private JButton returnButton;// label for potential error messages
 	private JLabel errorMessageLabel;		// label for potential error messages
-
+	private BankAccount account;
+	
 	/**
 	 * Constructs an instance (or objects) of the LoginView class.
 	 * 
@@ -42,6 +39,10 @@ public class WithdrawView extends JPanel implements ActionListener {
 		this.manager = manager;
 		this.errorMessageLabel = new JLabel("", SwingConstants.CENTER);
 		initialize();
+	}
+	
+	public void setBankAccount(BankAccount setAccount) {
+		this.account = setAccount;
 	}
 	
 	///////////////////// INSTANCE METHODS ////////////////////////////////////////////
@@ -154,15 +155,16 @@ public class WithdrawView extends JPanel implements ActionListener {
 		Object source = e.getSource();
 		
 		if (source.equals(withdrawButton)) {
-			if(manager.account.withdraw(Double.valueOf(amountField.getText())) == 3) {
+			if(account.withdraw(Double.valueOf(amountField.getText())) == 3) {
 				JOptionPane.showMessageDialog(null, "Amount successfully withdrawn.");
+				manager.db.updateAccount(account);
 				System.out.println("Success.");
 			}
-			else if(manager.account.withdraw(Double.valueOf(amountField.getText())) == 0) {
+			else if(account.withdraw(Double.valueOf(amountField.getText())) == 0) {
 				JOptionPane.showMessageDialog(null, "Invalid amount.");
 				System.out.println("Failure.");
 			}
-			else if(manager.account.withdraw(Double.valueOf(amountField.getText())) == 1) {
+			else if(account.withdraw(Double.valueOf(amountField.getText())) == 1) {
 				JOptionPane.showMessageDialog(null, "Insufficient funds.");
 				System.out.println("Failure.");
 			}
@@ -171,6 +173,7 @@ public class WithdrawView extends JPanel implements ActionListener {
 			}
 		}
 		else if(source.equals(returnButton)) {
+			manager.sendBankAccount(account, "Home");
 			manager.switchTo(ATM.HOME_VIEW);
 		}
 		else {

@@ -2,34 +2,33 @@ package view;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 
-import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
 import controller.ViewManager;
+import model.BankAccount;
 
 @SuppressWarnings("serial")
 public class DepositView extends JPanel implements ActionListener {
 		
 	private ViewManager manager;			// manages interactions between the views, model, and database
+	private BankAccount account;
 	private JTextField amountField;		// textfield where the user enters his or her account number
 	private JButton depositButton;
 	private JButton returnButton;// label for potential error messages
 	private JLabel errorMessageLabel;		// label for potential error messages
-
+	private JFrame frame;
+	
 	/**
 	 * Constructs an instance (or objects) of the LoginView class.
 	 * 
@@ -44,6 +43,9 @@ public class DepositView extends JPanel implements ActionListener {
 		initialize();
 	}
 	
+	public void setBankAccount(BankAccount setAccount) {
+		this.account = setAccount;
+	}
 	///////////////////// INSTANCE METHODS ////////////////////////////////////////////
 	
 	/**
@@ -154,17 +156,29 @@ public class DepositView extends JPanel implements ActionListener {
 		Object source = e.getSource();
 		
 		if (source.equals(depositButton)) {
-			if(manager.account.deposit(Double.valueOf(amountField.getText())) == 3) {
-				JOptionPane.showMessageDialog(null, "Amount successfully deposited.");
-				System.out.println("Success.");
+			int checkResult = account.deposit(Double.valueOf(amountField.getText()));
+			if(checkResult == 0) {
+				JOptionPane.showMessageDialog(frame, "Invalid amount.");
+				amountField.setText("");
 			}
-			else if(manager.account.deposit(Double.valueOf(amountField.getText())) == 0) {
-				JOptionPane.showMessageDialog(null, "Invalid amount.");
-				System.out.println("Failure.");
+			else if(checkResult == 3) {
+				JOptionPane.showMessageDialog(frame, "Amount deposited");
+				manager.db.updateAccount(account);
+				manager.sendBankAccount(account, "Home");
+				manager.switchTo(ATM.HOME_VIEW);
 			}
-			else {
-				System.out.println("Error");
-			}
+			
+//			if(manager.account.deposit(Double.valueOf(amountField.getText())) == 3) {
+//				JOptionPane.showMessageDialog(null, "Amount successfully deposited.");
+//				System.out.println("Success.");
+//			}
+//			else if(manager.account.deposit(Double.valueOf(amountField.getText())) == 0) {
+//				JOptionPane.showMessageDialog(null, "Invalid amount.");
+//				System.out.println("Failure.");
+//			}
+//			else {
+//				System.out.println("Error");
+//			}
 		}
 		else if(source.equals(returnButton)) {
 			manager.switchTo(ATM.HOME_VIEW);
