@@ -21,6 +21,7 @@ public class HomeView extends JPanel implements ActionListener {
 	private BankAccount account;
 	private JLabel printBalance;
 	private JLabel printName;
+	private JLabel printAcct;
 	private JButton logoffButton;
 	private JButton depositButton;
 	private JButton withdrawButton;
@@ -85,8 +86,14 @@ public class HomeView extends JPanel implements ActionListener {
 		
 		this.add(printName);
 		
+		printAcct = new JLabel("Account Number: " + Long.toString(account.getAccountNumber()));
+		printAcct.setBounds(10,40,500,25);
+		printAcct.setFont(new Font("DialogInput", Font.BOLD, 14));
+		
+		this.add(printAcct);
+		
 		printBalance = new JLabel("Current Balance: " + account.getCorrectBalance());
-		printBalance.setBounds(10, 40, 500, 25);
+		printBalance.setBounds(10, 70, 500, 25);
 		printBalance.setFont(new Font("DialogInput", Font.BOLD, 14));
 		
 		this.add(printBalance);
@@ -94,7 +101,7 @@ public class HomeView extends JPanel implements ActionListener {
 //	
 	private void initLogOffButton() {	
 		logoffButton = new JButton("Log Off");
-		logoffButton.setBounds(150, 100, 200, 35);
+		logoffButton.setBounds(150, 340, 200, 35);
 		logoffButton.addActionListener(this);
 		
 		this.add(logoffButton);
@@ -169,24 +176,34 @@ public class HomeView extends JPanel implements ActionListener {
 			manager.setAccount(null);
 			this.remove(printBalance);
 			this.remove(printName);
+			this.remove(printAcct);
 			manager.switchTo(ATM.LOGIN_VIEW);
 		}
 		else if(source.equals(depositButton)) {
 			this.remove(printBalance);
+			this.remove(printName);
+			this.remove(printAcct);
 			manager.sendBankAccount(account, "Deposit");
 			manager.switchTo(ATM.DEPOSIT_VIEW);
 		}
 		else if(source.equals(withdrawButton)) {
 			this.remove(printBalance);
+			this.remove(printName);
+			this.remove(printAcct);
 			manager.sendBankAccount(account, "Withdraw");
 			manager.switchTo(ATM.WITHDRAW_VIEW);
 		}
 		else if(source.equals(transferButton)) {
-			printBalance = new JLabel("");
+			this.remove(printBalance);
+			this.remove(printName);
+			this.remove(printAcct);
 			manager.sendBankAccount(account, "Transfer");
 			manager.switchTo(ATM.TRANSFER_VIEW);
 		}
 		else if(source.equals(viewAcctButton)) {
+			this.remove(printBalance);
+			this.remove(printName);
+			this.remove(printAcct);
 			manager.sendBankAccount(account, "ViewInfo");
 			manager.switchTo(ATM.INFORMATION_VIEW);
 		}

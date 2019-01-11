@@ -51,7 +51,7 @@ public class CreateView extends JPanel implements ActionListener {
 	private User newUser;
 	private long newAccountNumber;
 	private JFrame frame;
-	private JLabel errorMessageLabel = new JLabel("");;		// label for potential error messages
+	private JLabel errorMessageLabel = new JLabel("", SwingConstants.CENTER);;		// label for potential error messages
 
 	
 	/**
@@ -291,7 +291,7 @@ public class CreateView extends JPanel implements ActionListener {
 	}
 	
 	private void initErrorMessageLabel() {
-		errorMessageLabel.setBounds(10, 350, 500, 35);
+		errorMessageLabel.setBounds(20, 360, 500, 35);
 		errorMessageLabel.setFont(new Font("DialogInput", Font.ITALIC, 14));
 		errorMessageLabel.setForeground(Color.RED);
 		
@@ -366,12 +366,13 @@ public class CreateView extends JPanel implements ActionListener {
 		
 		if(source.equals(submitButton)) {
 			//check inputs
+			updateErrorMessage("");
 			boolean ok = true;
 			if(!checkUserInput(pinField.getText(), 1) || !checkUserInput(phoneField1.getText(), 1) || !checkUserInput(phoneField2.getText(), 1) || !checkUserInput(phoneField3.getText(), 1) || !checkUserInput(postalField.getText(), 1)) {
 				ok = false;
 				updateErrorMessage("Invalid entry.");
 			}
-			if(pinField.getText().length() != 4 || phoneField1.getText().length() != 3 || phoneField2.getText().length() != 3 || phoneField3.getText().length() != 3 || postalField.getText().length() != 5) {
+			if(pinField.getText().length() != 4 || phoneField1.getText().length() != 3 || phoneField2.getText().length() != 3 || phoneField3.getText().length() != 4 || postalField.getText().length() != 5) {
 				ok = false;
 				updateErrorMessage("One or more entries are too long or too short.");
 			}
