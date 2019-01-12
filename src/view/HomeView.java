@@ -76,6 +76,7 @@ public class HomeView extends JPanel implements ActionListener {
 		// positioning your components.
 	}
 	public void initScreen() {
+		System.out.println("Balance on initscreen: " + Double.toString(account.getBalance()));
 		printName = new JLabel("Welcome, " + account.getUser().getFirstName() + " " + account.getUser().getLastName());
 		printName.setBounds(10, 10, 500, 25);
 		printName.setFont(new Font("DialogInput", Font.BOLD, 14));

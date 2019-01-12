@@ -211,36 +211,43 @@ public class TransferView extends JPanel implements ActionListener {
 		Object source = e.getSource();
 		
 		if (source.equals(transferButton)) {
-			int test;
+			int test = -1;
 			if(accountField.getText() == "" || !checkUserInput(accountField.getText(), 3) || Long.valueOf(accountField.getText()) == account.getAccountNumber()) {
 				test = 2;
+				updateErrorMessage("Invalid account number.");
+
 			}
 			else if(amountField.getText() == "" || !checkUserInput(amountField.getText(), 2)) {
 				test = 0;
+				updateErrorMessage("Invalid amount.");
+
 			}
 			else{
-				test = account.transfer(manager.db.getAccount(Long.valueOf(accountField.getText())), Double.valueOf(amountField.getText()));
-			}
-			if(test == 3) {
-				manager.db.updateAccount(account);
-				manager.db.updateAccount(manager.db.getAccount(Long.valueOf(accountField.getText())));
-				amountField.setText("");
-				accountField.setText("");
-				updateErrorMessage("Amount successfully transferred.");
-				
-			}
-			else if(test == 2) {
-				updateErrorMessage("Invalid account number.");
-			}
-			else if(test == 1) {
-				updateErrorMessage("Insufficient funds.");
-			}
-			else if(test == 0) {
-				updateErrorMessage("Invalid amount.");
-				System.out.println("Failure.");
-			}
-			else {
-				System.out.println("Error");
+				BankAccount transferAccount = manager.db.getAccount(Long.valueOf(accountField.getText()));
+				test = account.transfer(transferAccount, Double.valueOf(amountField.getText()));
+				if(test == 3) {
+					manager.db.updateAccount(account);
+//					System.out.println("Balance before updating account in transfer account: " + transferAccount.toString());
+					manager.db.updateAccount(transferAccount);
+//					System.out.println("Balance after updating account in transfer account: " + manager.db.getAccount(Long.valueOf(accountField.getText())).toString());
+					amountField.setText("");
+					accountField.setText("");
+					updateErrorMessage("Amount successfully transferred.");
+					
+				}
+				else if(test == 2) {
+					updateErrorMessage("Invalid account number.");
+				}
+				else if(test == 1) {
+					updateErrorMessage("Insufficient funds.");
+				}
+				else if(test == 0) {
+					updateErrorMessage("Invalid amount.");
+					System.out.println("Failure.");
+				}
+				else {
+					System.out.println("Error");
+				}
 			}
 		}
 		else if(source.equals(returnButton)) {

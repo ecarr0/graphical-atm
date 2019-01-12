@@ -125,7 +125,7 @@ public class BankAccount {
 			return ATM.INVALID_AMOUNT;
 		} else {
 			balance = balance + amount;
-			System.out.println(balance);
+//			System.out.println("Balance in transfer account: " + Double.toString(balance));
 			return ATM.SUCCESS;
 		}
 	}
@@ -144,8 +144,8 @@ public class BankAccount {
 			return ATM.INSUFFICIENT_FUNDS;
 		} else {
 			balance = balance - amount;
-			System.out.println(balance);
-			System.out.println(Double.toString(getBalance()));
+//			System.out.println("Balance of original account: " + Double.toString(balance));
+//			System.out.println("Balance of original account using getBalance: " + Double.toString(getBalance()));
 			return ATM.SUCCESS;
 		}
 	}
@@ -166,6 +166,7 @@ public class BankAccount {
 			
 			if (status == ATM.SUCCESS) {
 				status = destination.deposit(amount);
+//				System.out.println("In BankAccount transfer method: "+ Double.toString(destination.getBalance()));
 			}
 			
 			return status;
@@ -247,6 +248,6 @@ public class BankAccount {
 	
 	@Override
 	public String toString() {
-		return "{ Account No.: " + accountNumber + ", Balance: " + getFormattedBalance() + " }";	// modify as needed
+		return "{ Account No.: " + accountNumber + ", Balance: " + getCorrectBalance() + " }";	// modify as needed
 	}
 }
