@@ -223,12 +223,12 @@ public class TransferView extends JPanel implements ActionListener {
 
 			}
 			else{
-				BankAccount transferAccount = manager.db.getAccount(Long.valueOf(accountField.getText()));
+				BankAccount transferAccount = manager.getAccount(Long.valueOf(accountField.getText()));
 				test = account.transfer(transferAccount, Double.valueOf(amountField.getText()));
 				if(test == 3) {
-					manager.db.updateAccount(account);
+					manager.updateAccount(account);
 //					System.out.println("Balance before updating account in transfer account: " + transferAccount.toString());
-					manager.db.updateAccount(transferAccount);
+					manager.updateAccount(transferAccount);
 //					System.out.println("Balance after updating account in transfer account: " + manager.db.getAccount(Long.valueOf(accountField.getText())).toString());
 					amountField.setText("");
 					accountField.setText("");

@@ -327,7 +327,7 @@ public class CreateView extends JPanel implements ActionListener {
 			}
 			return true;
 		}
-		else {
+		else if(type == 3){
 			Long longInput;
 			try {
 				longInput = Long.parseLong(input);
@@ -338,8 +338,25 @@ public class CreateView extends JPanel implements ActionListener {
 			}
 			return true;
 		}
+		else if(type == 4) {
+			for(int i = 0; i < input.length(); i++) {
+				if(!(input.charAt(i) >= 'a' && input.charAt(i) <= 'z') && !(input.charAt(i) >= 'A' && input.charAt(i) <= 'Z') && !(input.charAt(i) == '\'') && !(input.charAt(i) == '-') && !(input.charAt(i) == ' ') && !(input.charAt(i) == ',') && !(input.charAt(i) == '.')) {
+					System.out.print(i + " " + input.charAt(i));
+					return false;
+				}
+			}
+			return true;
+		}
+		else {
+			for(int i = 0; i < input.length(); i++) {
+				if(!(input.charAt(i) >= '0' && input.charAt(i) <= '9') && !(input.charAt(i) >= 'a' && input.charAt(i) <= 'z') && !(input.charAt(i) >= 'A' && input.charAt(i) <= 'Z') && !(input.charAt(i) == '\'') && !(input.charAt(i) == '-') && !(input.charAt(i) == ' ') && !(input.charAt(i) == ',')&& !(input.charAt(i) == '.')) {
+					System.out.print(i + " " + input.charAt(i));
+					return false;
+				}
+			}
+			return true;
+		}
 	}
-	
 	/*
 	 * CreateView is not designed to be serialized, and attempts to serialize will throw an IOException.
 	 * 
@@ -368,23 +385,48 @@ public class CreateView extends JPanel implements ActionListener {
 			//check inputs
 			updateErrorMessage("");
 			boolean ok = true;
-			if(!checkUserInput(pinField.getText(), 1) || !checkUserInput(phoneField1.getText(), 1) || !checkUserInput(phoneField2.getText(), 1) || !checkUserInput(phoneField3.getText(), 1) || !checkUserInput(postalField.getText(), 1)) {
+			if(pinField.getText().length() != 4) {
+				updateErrorMessage("Pin must be 4 characters");
 				ok = false;
-				updateErrorMessage("Invalid entry.");
 			}
-			if(pinField.getText().length() != 4 || phoneField1.getText().length() != 3 || phoneField2.getText().length() != 3 || phoneField3.getText().length() != 4 || postalField.getText().length() != 5) {
+			else if(!checkUserInput(pinField.getText(), 1)) {
+				updateErrorMessage("The pin can only consist of numbers.");
 				ok = false;
+			}
+			else if(pinField.getText().length() != 4 || phoneField1.getText().length() != 3 || phoneField2.getText().length() != 3 || phoneField3.getText().length() != 4 || postalField.getText().length() != 5) {
 				updateErrorMessage("One or more entries are too long or too short.");
+				ok = false;
 			}
-			
+			else if(!(checkUserInput(phoneField1.getText(), 1)) || !(checkUserInput(phoneField2.getText(), 1)) || !(checkUserInput(phoneField3.getText(), 1))) {
+				updateErrorMessage("Invalid entry - phone number.");
+				ok = false;
+			}
+			else if(!(checkUserInput(postalField.getText(), 1)) ) {
+				updateErrorMessage("Invalid entry - postal code.");
+				ok = false;
+			}
+			else if(!(checkUserInput(addressField.getText(), 5))) {
+				updateErrorMessage("Invalid entry - address.");
+				ok = false;
+			}
+			else if(!(checkUserInput(cityField.getText(), 4))) {
+				updateErrorMessage("Invalid entry - city.");
+				ok = false;
+			}
+			else if(!(checkUserInput(firstNameField.getText(), 4)) || !(checkUserInput(lastNameField.getText(), 4))) {
+				updateErrorMessage("Invalid entry - name.");
+				ok = false;
+			}
 			if(ok) {
-				
-				newAccountNumber = manager.db.highestAcctNumber() + 1;
+				newAccountNumber = manager.highestAcctNumber() + 1;
 				JOptionPane.showMessageDialog(frame,"Your account number is: " + Long.toString(newAccountNumber));
 				newUser = new User(Integer.valueOf(pinField.getText()), Integer.valueOf((String)yearPicker.getSelectedItem() + (String)monthPicker.getSelectedItem() + (String)dayPicker.getSelectedItem()), Long.valueOf(phoneField1.getText() + phoneField2.getText() + phoneField3.getText()), firstNameField.getText(), lastNameField.getText(), addressField.getText(), cityField.getText(), (String)stateField.getSelectedItem(), postalField.getText());
 				System.out.println(newUser.toString());
 				newAccount = new BankAccount('Y', newAccountNumber, 0.00, newUser);
-				manager.db.insertAccount(newAccount);
+				System.out.println(newAccount.toString());
+				if(manager.insertAccount(newAccount)) {
+					System.out.print("SUCCESS");
+				}
 				pinField.setText("");
 				firstNameField.setText("");
 				lastNameField.setText("");

@@ -202,7 +202,7 @@ public class WithdrawView extends JPanel implements ActionListener {
 			}
 			
 			if(checkResult == 3) {
-				manager.db.updateAccount(account);
+				manager.updateAccount(account);
 				updateErrorMessage("Amount successfully withdrawn.");
 				amountField.setText("");
 				System.out.println("Success.");

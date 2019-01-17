@@ -125,7 +125,6 @@ public class BankAccount {
 			return ATM.INVALID_AMOUNT;
 		} else {
 			balance = balance + amount;
-//			System.out.println("Balance in transfer account: " + Double.toString(balance));
 			return ATM.SUCCESS;
 		}
 	}

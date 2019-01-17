@@ -205,7 +205,7 @@ public class DepositView extends JPanel implements ActionListener {
 				amountField.setText("");
 			}
 			else if(checkResult == 3) {
-				manager.db.updateAccount(account);
+				manager.updateAccount(account);
 				updateErrorMessage("Amount successfully deposited.");
 				amountField.setText("");
 			}

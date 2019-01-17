@@ -82,7 +82,9 @@ public class InformationView extends JPanel implements ActionListener {
 	private void initialize() {
 		this.setLayout(null);
 		
-		
+		initEditButton();
+		initReturnButton();
+		initErrorMessageLabel();
 	}
 	
 	public void initInfoPortion() {
@@ -96,9 +98,7 @@ public class InformationView extends JPanel implements ActionListener {
 		initCityField();
 		initStateField();
 		initPostalField();
-		
-		initEditButton();
-		initReturnButton();
+
 	}
 	
 	/*
@@ -335,7 +335,7 @@ public class InformationView extends JPanel implements ActionListener {
 	}
 	
 	private void initErrorMessageLabel() {
-		errorMessageLabel.setBounds(0, 240, 500, 35);
+		errorMessageLabel.setBounds(0, 300, 500, 35);
 		errorMessageLabel.setFont(new Font("DialogInput", Font.ITALIC, 14));
 		errorMessageLabel.setForeground(Color.RED);
 		
@@ -380,6 +380,63 @@ public class InformationView extends JPanel implements ActionListener {
 		throw new IOException("ERROR: The LoginView class is not serializable.");
 	}
 
+	public boolean checkUserInput(String input, int type) {
+		// 1 = integer, 2 = double, 3 = long
+		if(type == 1) {
+			int integerInput;
+			try{
+				integerInput = Integer.parseInt(input);
+		    }
+		    catch(NumberFormatException e){
+		    	System.out.println("Response must be numerical. Try again.\n");
+		    	return false;
+		    }
+			return true;
+		}
+		
+		else if(type == 2){
+			double doubleInput;
+			try {
+				doubleInput = Double.parseDouble(input);
+			}
+			catch (NumberFormatException e){
+				System.out.println("Response must be numerical. Try again.\n");
+				return false;
+			}
+			return true;
+		}
+		else if(type == 3){
+			Long longInput;
+			try {
+				longInput = Long.parseLong(input);
+			}
+			catch (NumberFormatException e) {
+				System.out.println("Response must be numerical. Try again.\n");
+				return false;
+			}
+			return true;
+		}
+		else if(type == 4) {
+			for(int i = 0; i < input.length(); i++) {
+				if(!(input.charAt(i) >= 'a' && input.charAt(i) <= 'z') && !(input.charAt(i) >= 'A' && input.charAt(i) <= 'Z') && !(input.charAt(i) == '\'') && !(input.charAt(i) == '-') && !(input.charAt(i) == ' ') && !(input.charAt(i) == ',') && !(input.charAt(i) == '.')) {
+					System.out.print(i + " " + input.charAt(i));
+					return false;
+				}
+			}
+			return true;
+		}
+		else {
+			for(int i = 0; i < input.length(); i++) {
+				if(!(input.charAt(i) >= '0' && input.charAt(i) <= '9') && !(input.charAt(i) >= 'a' && input.charAt(i) <= 'z') && !(input.charAt(i) >= 'A' && input.charAt(i) <= 'Z') && !(input.charAt(i) == '\'') && !(input.charAt(i) == '-') && !(input.charAt(i) == ' ') && !(input.charAt(i) == ',')&& !(input.charAt(i) == '.')) {
+					System.out.print(i + " " + input.charAt(i));
+
+					return false;
+				}
+			}
+			return true;
+		}
+	}
+	
 	///////////////////// OVERRIDDEN METHODS //////////////////////////////////////////
 	
 	/*
@@ -395,6 +452,10 @@ public class InformationView extends JPanel implements ActionListener {
 		
 		if (source.equals(editButton)) {
 			//set field to editable
+			this.remove(editButton);
+			this.remove(returnButton);
+			initSaveButton();
+			initCancelButton();
 			addressField.setEditable(true);
 			cityField.setEditable(true);
 			stateField.setEnabled(true);
@@ -404,10 +465,8 @@ public class InformationView extends JPanel implements ActionListener {
 			phoneField3.setEditable(true);
 			pinField.setEditable(true);
 			pinField.setEchoChar((char)0);
-			initSaveButton();
-			initCancelButton();
-			this.remove(editButton);
-			this.remove(returnButton);
+			
+
 			
 		}
 		else if(source.equals(returnButton)) {
@@ -415,31 +474,55 @@ public class InformationView extends JPanel implements ActionListener {
 			manager.switchTo(ATM.HOME_VIEW);
 		}
 		else if(source.equals(saveButton)) {
-			account.getUser().setStreetAddress(addressField.getText());
-			account.getUser().setCity(cityField.getText());
-			account.getUser().setState(stateField.getSelectedItem().toString());
-			account.getUser().setZip(postalField.getText());
-			account.getUser().setPhone(Long.valueOf(phoneField1.getText() + phoneField2.getText() + phoneField3.getText()));
-			account.getUser().setPin(account.getUser().getPin(), Integer.valueOf(pinField.getText()));
-			manager.db.updateAccount(account);
+			if(pinField.getText().length() != 4) {
+				updateErrorMessage("Pin must be 4 characters");
+			}
+			else if(!checkUserInput(pinField.getText(), 1)) {
+				updateErrorMessage("The pin can only consist of numbers.");
+			}
+			else if(pinField.getText().length() != 4 || phoneField1.getText().length() != 3 || phoneField2.getText().length() != 3 || phoneField3.getText().length() != 4 || postalField.getText().length() != 5) {
+				updateErrorMessage("One or more entries are too long or too short.");
+			}
+			else if(!(checkUserInput(phoneField1.getText(), 1)) || !(checkUserInput(phoneField2.getText(), 1)) || !(checkUserInput(phoneField3.getText(), 1))) {
+				updateErrorMessage("Invalid entry, phone field.");
+			}
+			else if(!(checkUserInput(postalField.getText(), 1)) ) {
+				updateErrorMessage("Invalid entry - postal.");
+			}
+			else if(!(checkUserInput(addressField.getText(), 5))) {
+				updateErrorMessage("Invalid entry - address.");
+			}
+			else if(!(checkUserInput(cityField.getText(), 4))) {
+				updateErrorMessage("Invalid entry - city");
+			}
+			else {
+				account.getUser().setStreetAddress(addressField.getText());
+				account.getUser().setCity(cityField.getText());
+				account.getUser().setState(stateField.getSelectedItem().toString());
+				account.getUser().setZip(postalField.getText());
+				account.getUser().setPhone(Long.valueOf(phoneField1.getText() + phoneField2.getText() + phoneField3.getText()));
+				account.getUser().setPin(account.getUser().getPin(), Integer.valueOf(pinField.getText()));
+				manager.updateAccount(account);
 
-			addressField.setEditable(false);
-			cityField.setEditable(false);
-			stateField.setEnabled(false);
-			postalField.setEditable(false);
-			phoneField1.setEditable(false);
-			phoneField2.setEditable(false);
-			phoneField3.setEditable(false);
-			pinField.setEditable(false);
-			pinField.setEchoChar('\u2022');
-			initEditButton();
-			initReturnButton();
-			this.remove(saveButton);
-			this.remove(cancelButton);
-			
+				addressField.setEditable(false);
+				cityField.setEditable(false);
+				stateField.setEnabled(false);
+				postalField.setEditable(false);
+				phoneField1.setEditable(false);
+				phoneField2.setEditable(false);
+				phoneField3.setEditable(false);
+				pinField.setEditable(false);
+				pinField.setEchoChar('\u2022');
+				initEditButton();
+				initReturnButton();
+				this.remove(saveButton);
+				this.remove(cancelButton);
+			}
 		}
 		else if(source.equals(cancelButton)) {
 			this.removeAll();
+			initEditButton();
+			initReturnButton();
 			initInfoPortion();
 		}
 		else {

@@ -223,6 +223,7 @@ public class LoginView extends JPanel implements ActionListener {
 	 * @param e
 	 */
 	
+	@SuppressWarnings("deprecation")
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		Object source = e.getSource();

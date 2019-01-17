@@ -13,8 +13,8 @@ import view.LoginView;
 public class ViewManager {
 	
 	private Container views;				// the collection of all views in the application
-	public Database db;					// a reference to the database
-	public BankAccount account;			// the user's bank account
+	private Database db;					// a reference to the database
+	private BankAccount account;			// the user's bank account
 //	private BankAccount destination;		// an account to which the user can transfer funds
 	
 	/**
@@ -37,6 +37,26 @@ public class ViewManager {
 	 * @param accountNumber
 	 * @param pin
 	 */
+	
+	public boolean updateAccount(BankAccount account) {
+		return db.updateAccount(account);
+	}
+	
+	public boolean closeAccount(BankAccount account) {
+		return db.closeAccount(account);
+	}
+	
+	public boolean insertAccount(BankAccount account) {
+		return db.insertAccount(account);
+	}
+	
+	public BankAccount getAccount(Long accountNumber) {
+		return db.getAccount(accountNumber);
+	}
+	
+	public long highestAcctNumber() {
+		return db.highestAcctNumber();
+	}
 	
 	public void setAccount(BankAccount account) {
 		this.account = account;
