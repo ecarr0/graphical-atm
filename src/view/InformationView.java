@@ -210,9 +210,7 @@ public class InformationView extends JPanel implements ActionListener {
 		yearPicker.setBounds(315, 140, 75, 25);
 		yearPicker.setEnabled(false);
 
-//		dobField = new JTextField(8);
-//		dobField.setBounds(205, 110, 200, 25);
-//		
+		
 		this.add(label);
 		this.add(monthPicker);
 		this.add(dayPicker);
@@ -326,14 +324,6 @@ public class InformationView extends JPanel implements ActionListener {
 		this.add(editButton);
 	}
 	
-	private void initSaveButton() {	
-		saveButton = new JButton("Save");
-		saveButton.setBounds(126, 340, 248, 35);
-		saveButton.addActionListener(this);
-		
-		this.add(saveButton);
-	}
-	
 	private void initErrorMessageLabel() {
 		errorMessageLabel.setBounds(0, 310, 500, 35);
 		errorMessageLabel.setFont(new Font("DialogInput", Font.ITALIC, 14));
@@ -355,14 +345,6 @@ public class InformationView extends JPanel implements ActionListener {
 		this.add(returnButton);		
 	}
 	
-	private void initCancelButton() {
-		cancelButton = new JButton("Cancel");
-		cancelButton.setBounds(126, 380, 248, 35);
-		cancelButton.addActionListener(this);
-		
-		//this.add(label);
-		this.add(cancelButton);		
-	}
 	
 	/*
 	 * Initializes the components needed for the power button.
@@ -452,78 +434,74 @@ public class InformationView extends JPanel implements ActionListener {
 		
 		if (source.equals(editButton)) {
 			//set field to editable
-			this.remove(editButton);
-			this.remove(returnButton);
-			initSaveButton();
-			initCancelButton();
-			addressField.setEditable(true);
-			cityField.setEditable(true);
-			stateField.setEnabled(true);
-			postalField.setEditable(true);
-			phoneField1.setEditable(true);
-			phoneField2.setEditable(true);
-			phoneField3.setEditable(true);
-			pinField.setEditable(true);
-			pinField.setEchoChar((char)0);
-			
+			if(editButton.getLabel() == "Edit") {
+				editButton.setLabel("Save");
+				returnButton.setLabel("Cancel");
+				addressField.setEditable(true);
+				cityField.setEditable(true);
+				stateField.setEnabled(true);
+				postalField.setEditable(true);
+				phoneField1.setEditable(true);
+				phoneField2.setEditable(true);
+				phoneField3.setEditable(true);
+				pinField.setEditable(true);
+				pinField.setEchoChar((char)0);
+			}
+			else if(editButton.getLabel() == "Save") {
+				if(pinField.getText().length() != 4) {
+					updateErrorMessage("Pin must be 4 characters");
+				}
+				else if(!checkUserInput(pinField.getText(), 1)) {
+					updateErrorMessage("The pin can only consist of numbers.");
+				}
+				else if(pinField.getText().length() != 4 || phoneField1.getText().length() != 3 || phoneField2.getText().length() != 3 || phoneField3.getText().length() != 4 || postalField.getText().length() != 5) {
+					updateErrorMessage("One or more entries are too long or too short.");
+				}
+				else if(!(checkUserInput(phoneField1.getText(), 1)) || !(checkUserInput(phoneField2.getText(), 1)) || !(checkUserInput(phoneField3.getText(), 1))) {
+					updateErrorMessage("Invalid entry, phone field.");
+				}
+				else if(!(checkUserInput(postalField.getText(), 1)) ) {
+					updateErrorMessage("Invalid entry - postal.");
+				}
+				else if(!(checkUserInput(addressField.getText(), 5))) {
+					updateErrorMessage("Invalid entry - address.");
+				}
+				else if(!(checkUserInput(cityField.getText(), 4))) {
+					updateErrorMessage("Invalid entry - city");
+				}
+				else {
+					account.getUser().setStreetAddress(addressField.getText());
+					account.getUser().setCity(cityField.getText());
+					account.getUser().setState(stateField.getSelectedItem().toString());
+					account.getUser().setZip(postalField.getText());
+					account.getUser().setPhone(Long.valueOf(phoneField1.getText() + phoneField2.getText() + phoneField3.getText()));
+					account.getUser().setPin(account.getUser().getPin(), Integer.valueOf(pinField.getText()));
+					manager.updateAccount(account);
 
-			
+					addressField.setEditable(false);
+					cityField.setEditable(false);
+					stateField.setEnabled(false);
+					postalField.setEditable(false);
+					phoneField1.setEditable(false);
+					phoneField2.setEditable(false);
+					phoneField3.setEditable(false);
+					pinField.setEditable(false);
+					pinField.setEchoChar('\u2022');
+					editButton.setLabel("Edit");
+					returnButton.setLabel("Return to previous menu");
+				}
+			}
 		}
 		else if(source.equals(returnButton)) {
-			manager.sendBankAccount(account, "Home");
-			manager.switchTo(ATM.HOME_VIEW);
-		}
-		else if(source.equals(saveButton)) {
-			if(pinField.getText().length() != 4) {
-				updateErrorMessage("Pin must be 4 characters");
-			}
-			else if(!checkUserInput(pinField.getText(), 1)) {
-				updateErrorMessage("The pin can only consist of numbers.");
-			}
-			else if(pinField.getText().length() != 4 || phoneField1.getText().length() != 3 || phoneField2.getText().length() != 3 || phoneField3.getText().length() != 4 || postalField.getText().length() != 5) {
-				updateErrorMessage("One or more entries are too long or too short.");
-			}
-			else if(!(checkUserInput(phoneField1.getText(), 1)) || !(checkUserInput(phoneField2.getText(), 1)) || !(checkUserInput(phoneField3.getText(), 1))) {
-				updateErrorMessage("Invalid entry, phone field.");
-			}
-			else if(!(checkUserInput(postalField.getText(), 1)) ) {
-				updateErrorMessage("Invalid entry - postal.");
-			}
-			else if(!(checkUserInput(addressField.getText(), 5))) {
-				updateErrorMessage("Invalid entry - address.");
-			}
-			else if(!(checkUserInput(cityField.getText(), 4))) {
-				updateErrorMessage("Invalid entry - city");
+			if(returnButton.getLabel() == "Return to previous menu") {
+				manager.sendBankAccount(account, "Home");
+				manager.switchTo(ATM.HOME_VIEW);
 			}
 			else {
-				account.getUser().setStreetAddress(addressField.getText());
-				account.getUser().setCity(cityField.getText());
-				account.getUser().setState(stateField.getSelectedItem().toString());
-				account.getUser().setZip(postalField.getText());
-				account.getUser().setPhone(Long.valueOf(phoneField1.getText() + phoneField2.getText() + phoneField3.getText()));
-				account.getUser().setPin(account.getUser().getPin(), Integer.valueOf(pinField.getText()));
-				manager.updateAccount(account);
-
-				addressField.setEditable(false);
-				cityField.setEditable(false);
-				stateField.setEnabled(false);
-				postalField.setEditable(false);
-				phoneField1.setEditable(false);
-				phoneField2.setEditable(false);
-				phoneField3.setEditable(false);
-				pinField.setEditable(false);
-				pinField.setEchoChar('\u2022');
-				initEditButton();
-				initReturnButton();
-				this.remove(saveButton);
-				this.remove(cancelButton);
+				initInfoPortion();
+				editButton.setLabel("Edit");
+				returnButton.setLabel("Return to previous menu");
 			}
-		}
-		else if(source.equals(cancelButton)) {
-			this.removeAll();
-			initEditButton();
-			initReturnButton();
-			initInfoPortion();
 		}
 		else {
 			System.err.println("ERROR: Action command not found (" + e.getActionCommand() + ")");

@@ -269,20 +269,6 @@ public class Database {
 		insertDefaultAccount();
 	}
 	
-	private void throwOut() throws SQLException {
-		try {
-			stmt = conn.createStatement();
-
-
-			PreparedStatement deleteStmt = conn.prepareStatement("DELETE FROM accounts WHERE 1 = 1");
-			
-			deleteStmt.executeQuery();
-			
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		
-	}
 	
 	/*
 	 * Creates the initial accounts table. This will only be done once during initial setup.

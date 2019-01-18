@@ -19,7 +19,6 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
 import controller.ViewManager;
-import model.BankAccount;
 
 @SuppressWarnings("serial")
 public class LoginView extends JPanel implements ActionListener {
