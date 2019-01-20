@@ -239,14 +239,18 @@ public class LoginView extends JPanel implements ActionListener {
 				updateErrorMessage("");
 				String accountNum = accountField.getText();
 				char[] pin = pinField.getPassword();
+				manager.login(accountNum, pin);
 				accountField.setText("");
 				pinField.setText("");
-				manager.login(accountNum, pin);
 			}
 		} else if (source.equals(createButton)) {
+			accountField.setText("");
+			pinField.setText("");
 			updateErrorMessage("");
 			manager.switchTo(ATM.CREATE_VIEW);
 		} else if (source.equals(powerButton)) {
+			accountField.setText("");
+			pinField.setText("");
 			updateErrorMessage("");
 			manager.shutdown();
 		} else {

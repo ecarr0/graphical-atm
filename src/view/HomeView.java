@@ -215,8 +215,14 @@ public class HomeView extends JPanel implements ActionListener {
 				);
 				if (choice == 0) {
 					if(manager.closeAccount(account)) {
-						this.removeAll();
+						this.remove(printBalance);
+						this.remove(printName);
+						this.remove(printAcct);
+						
 						manager.switchTo(ATM.LOGIN_VIEW);
+						
+						manager.getAccount().setUser(null);
+						manager.setAccount(null);
 					}
 				}
 		}

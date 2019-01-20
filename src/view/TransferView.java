@@ -219,29 +219,34 @@ public class TransferView extends JPanel implements ActionListener {
 			}
 			else{
 				BankAccount transferAccount = manager.getAccount(Long.valueOf(accountField.getText()));
-				test = account.transfer(transferAccount, Double.valueOf(amountField.getText()));
-				if(test == 3) {
-					manager.updateAccount(account);
-//					System.out.println("Balance before updating account in transfer account: " + transferAccount.toString());
-					manager.updateAccount(transferAccount);
-//					System.out.println("Balance after updating account in transfer account: " + manager.db.getAccount(Long.valueOf(accountField.getText())).toString());
-					amountField.setText("");
-					accountField.setText("");
-					updateErrorMessage("Amount successfully transferred.");
-					
-				}
-				else if(test == 2) {
-					updateErrorMessage("Invalid account number.");
-				}
-				else if(test == 1) {
-					updateErrorMessage("Insufficient funds.");
-				}
-				else if(test == 0) {
-					updateErrorMessage("Invalid amount.");
-					System.out.println("Failure.");
+				if(transferAccount != null && transferAccount.getStatus() != 'N') {
+					test = account.transfer(transferAccount, Double.valueOf(amountField.getText()));
+					if(test == 3) {
+						manager.updateAccount(account);
+//						System.out.println("Balance before updating account in transfer account: " + transferAccount.toString());
+						manager.updateAccount(transferAccount);
+//						System.out.println("Balance after updating account in transfer account: " + manager.db.getAccount(Long.valueOf(accountField.getText())).toString());
+						amountField.setText("");
+						accountField.setText("");
+						updateErrorMessage("Amount successfully transferred.");
+						
+					}
+					else if(test == 2) {
+						updateErrorMessage("Invalid account number.");
+					}
+					else if(test == 1) {
+						updateErrorMessage("Insufficient funds.");
+					}
+					else if(test == 0) {
+						updateErrorMessage("Invalid amount.");
+						System.out.println("Failure.");
+					}
+					else {
+						System.out.println("Error");
+					}
 				}
 				else {
-					System.out.println("Error");
+					updateErrorMessage("Invalid account number.");
 				}
 			}
 		}
